@@ -22,7 +22,7 @@ pipeline {
             steps {
                 sshagent([SSH_CREDENTIAL]) {
                     sh """
-                        ssh -o StrictHostKeyChecking=no ${REMOTE_USER}@${SERVER_IP} 'mkdir -p ${REMOTE_PATH}'
+                        ssh -o StrictHostKeyChecking=no ${REMOTE_USER}@${SERVER_IP}
                         scp -o StrictHostKeyChecking=no -r * ${REMOTE_USER}@${SERVER_IP}:${REMOTE_PATH}/
                     """
                 }
@@ -35,7 +35,9 @@ pipeline {
                     sh """
                         ssh -o StrictHostKeyChecking=no ${REMOTE_USER}@${SERVER_IP} '
                             cd ${REMOTE_PATH} &&
+                            sudo apt install nodejs npm -y &&
                             npm install &&
+                            sudo npm install -g pm2 &&
                             pm2 start app.js --name node-app || pm2 restart node-app
                         '
                     """
